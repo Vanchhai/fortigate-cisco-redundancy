@@ -32,7 +32,7 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 | **VLAN 20** | `10.10.20.0/24` | `10.10.20.1` | SERVER LAN |
 | **VLAN 30** | `10.10.30.0/24` | `10.10.30.1` | VOICE LAN |
 | **VLAN 99** | `10.255.0.0/24` | `10.255.0.10` | MGMT LAN |
-| **VLAN 999** | `10.255.0.0/24` | `10.255.0.10` | NATIVE-UNUSED |
+| **VLAN 999** |  |  | NATIVE-UNUSED |
 
 ## FortiGate HA Cluster Configuration 
 
@@ -69,8 +69,8 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 
 | Interface Name | VDOM | Parent Interface | VLAN ID | IP Address / Subnet | Allowed Administrative Access |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **vl10-users** | `root` | `agg1` | `10` | `10.10.10.2 255.255.255.0` | `ping`, `https`, `ssh` |
-| **vl20-servers** | `root` | `agg1` | `20` | `10.10.20.2 255.255.255.0` | `ping` |
+| **vl10-users** | `root` | `agg1` | `10` | `10.10.10.2/24` | `ping`, `https`, `ssh` |
+| **vl20-servers** | `root` | `agg1` | `20` | `10.10.20.2/24` | `ping` |
 
 ## Cisco StackWise Virtual (SVL) Configuration
 
