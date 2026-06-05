@@ -93,10 +93,10 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 
 | Physical Interface | Description | Channel Group | LACP Mode |
 | :--- | :--- | :--- | :--- |
-| **TenGigabitEthernet1/0/1** | FGT-A port1 | `10` | `active` |
-| **TenGigabitEthernet2/0/1** | FGT-A port2 | `10` | `active` |
-| **TenGigabitEthernet1/0/2** | FGT-B port1 | `20` | `active` |
-| **TenGigabitEthernet2/0/2** | FGT-B port2 | `20` | `active` |
+| **TenGigabitEthernet1/0/1(CORE-SW1)** | FGT-A port1 | `10` | `active` |
+| **TenGigabitEthernet2/0/1(CORE-SW2)** | FGT-A port2 | `10` | `active` |
+| **TenGigabitEthernet1/0/2(CORE-SW1)** | FGT-B port1 | `20` | `active` |
+| **TenGigabitEthernet2/0/2(CORE-SW2)** | FGT-B port2 | `20` | `active` |
 
 ## Cisco SVI and HSRPv2 Configuration
 
