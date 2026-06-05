@@ -53,6 +53,67 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 | **Priority** | `200` *(Primary candidate)* | `100` *(Secondary candidate)* |
 | **Monitor Interfaces** | `"port1"`, `"port2"`, `"wan1"` | `"port1"`, `"port2"`, `"wan1"` |
 
+## FortiGate LACP Aggregate Interface Configuration (`agg1`)
+
+| Command / Parameter | Value | Description |
+| :--- | :--- | :--- |
+| **Interface Name** | `agg1` | The name of the logical aggregate interface. |
+| **vdom** | `root` | Assigns the interface to the "root" Virtual Domain. |
+| **type** | `aggregate` | Defines the interface type as an 802.3ad Link Aggregation Group. |
+| **member** | `"port1" "port2"` | Physical interfaces bundled into this aggregate group. |
+| **lacp-mode** | `active` | Actively transmits LACP packets to negotiate the bond with the peer. |
+| **lacp-speed** | `fast` | Requests LACP packets every 1 second (instead of the standard 30 seconds). |
+| **min-links** | `1` | Minimum number of operational physical links required to keep the aggregate interface up. |
+
+## FortiGate VLAN Sub-interfaces Configuration on `agg1`
+
+| Interface Name | VDOM | Parent Interface | VLAN ID | IP Address / Subnet | Allowed Administrative Access |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **vl10-users** | `root` | `agg1` | `10` | `10.10.10.2 255.255.255.0` | `ping`, `https`, `ssh` |
+| **vl20-servers** | `root` | `agg1` | `20` | `10.10.20.2 255.255.255.0` | `ping` |
+
+## Cisco StackWise Virtual (SVL) Configuration
+
+| Configuration Step | Switch-1 (Primary Candidate) | Switch-2 (Secondary Candidate) |
+| :--- | :--- | :--- |
+| **Domain ID** | `10` | `10` |
+| **SVL Link (SVL1)** | `TenGigabitEthernet1/1/1-2` | `TenGigabitEthernet2/1/1-2` |
+| **Dual-Active Detection (DAD)** | `TenGigabitEthernet1/0/48` | `TenGigabitEthernet2/0/48` |
+| **Command Mode** | `stackwise-virtual` | `stackwise-virtual` |
+| **Final Action** | `write memory` & `reload` | `write memory` & `reload` |
+
+## Cisco Port-Channel Configuration to FortiGate Cluster
+
+| Logical Interface | Physical Members | Description | Mode | Allowed VLANs | Native VLAN | Security/STP |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Port-channel10** | `Te1/0/1`, `Te2/0/1` | `>>> FGT-A agg1 <<<` | Trunk | `10, 20, 30, 99` | `999` | `spanning-tree guard root` |
+| **Port-channel20** | `Te1/0/2`, `Te2/0/2` | `>>> FGT-B agg1 <<<` | Trunk | `10, 20, 30, 99` | `999` | `spanning-tree guard root` |
+
+### Interface Membership Details
+
+| Physical Interface | Description | Channel Group | LACP Mode |
+| :--- | :--- | :--- | :--- |
+| **TenGigabitEthernet1/0/1** | FGT-A port1 | `10` | `active` |
+| **TenGigabitEthernet2/0/1** | FGT-A port2 | `10` | `active` |
+| **TenGigabitEthernet1/0/2** | FGT-B port1 | `20` | `active` |
+| **TenGigabitEthernet2/0/2** | FGT-B port2 | `20` | `active` |
+
+## Cisco SVI and HSRPv2 Configuration
+
+| Parameter | VLAN 10 (Users) | VLAN 20 (Servers) |
+| :--- | :--- | :--- |
+| **Interface Name** | `Vlan10` | `Vlan20` |
+| **Description** | `USERS GATEWAY` | `SERVERS GATEWAY` |
+| **Physical IP Address** | `10.10.10.252 255.255.255.0` | `10.10.20.252 255.255.255.0` |
+| **HSRP Version** | `Version 2` | `Version 2` |
+| **HSRP Group ID** | `10` | `20` |
+| **Virtual IP (Gateway)** | `10.10.10.1` | `10.10.20.1` |
+| **HSRP Base Priority** | `110` | `110` |
+| **Preemption** | `Enabled` (with 60s minimum delay) | `Enabled` (immediate) |
+| **HSRP Timers** | Hello: `250 msec` / Hold: `750 msec` | *Default (Hello: 3s / Hold: 10s)* |
+| **Authentication** | MD5 Key-string: `CORE-HSRP` | *None* |
+| **Object Tracking** | Track Object `1` (Decrements priority by `20`) | *None* |
+
 ## FortiGate HA — Concepts
 
 ### Active-Passive cluster with session synchronization
