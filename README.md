@@ -26,12 +26,32 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 
 | Segment | Network Address | Default Gateway | Attached Devices / Role |
 | :--- | :--- | :--- | :--- |
-| **WAN 1** | `203.0.113.2 255/30` | `203.0.113.1` | ISP-A, WAN1 |
+| **WAN 1** | `203.0.113.2/30` | `203.0.113.1` | ISP-A, WAN1 |
 | **WAN 2** | `198.51.100.2/30` | `198.51.100.1` | ISP-B, WAN2 |
 | **VLAN 10** | `10.10.10.0/24` | `10.10.10.1` | USER LAN |
 | **VLAN 20** | `10.10.20.0/24` | `10.10.20.1` | SERVER LAN |
+| **VLAN 30** | `10.10.30.0/24` | `10.10.30.1` | VOICE LAN |
 | **VLAN 99** | `10.255.0.0/24` | `10.255.0.10` | MGMT LAN |
+| **VLAN 999** | `10.255.0.0/24` | `10.255.0.10` | NATIVE-UNUSED |
 
+## FortiGate HA Cluster Configuration 
+
+| Parameter | FGT-A | FGT-B |
+| :--- | :--- | :--- |
+| **Hostname** | `FGT-A` | `FGT-B` |
+| **Group ID** | `10` | `10` |
+| **Group Name** | `CORE-HA` | `CORE-HA` |
+| **Mode** | `a-p` (Active-Passive) | `a-p` (Active-Passive) |
+| **Password** | `Fortinet!HA2026` | `Fortinet!HA2026` |
+| **Heartbeat Devices (hbdev)** | `"ha1" 50`, `"ha2" 100` | `"ha1" 50`, `"ha2" 100` |
+| **Session Pickup** | `enable` | `enable` |
+| **Session Pickup Connectionless** | `enable` | `enable` |
+| **HA Management Status** | `enable` | `enable` |
+| **HA Management Interface** | `"mgmt1"` | `"mgmt1"` |
+| **HA Management Gateway** | `10.255.0.1` | `10.255.0.1` |
+| **Override** | `enable` | `disable` |
+| **Priority** | `200` *(Primary candidate)* | `100` *(Secondary candidate)* |
+| **Monitor Interfaces** | `"port1"`, `"port2"`, `"wan1"` | `"port1"`, `"port2"`, `"wan1"` |
 
 ## FortiGate HA — Concepts
 
