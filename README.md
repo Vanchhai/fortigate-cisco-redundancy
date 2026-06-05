@@ -26,11 +26,11 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 
 | Segment | Network Address | Default Gateway | Attached Devices / Role |
 | :--- | :--- | :--- | :--- |
-| **LAN 1** | `192.168.1.0/24` | `192.168.1.1` | PC01, PC02 |
-| **LAN 2** | `192.168.2.0/24` | `192.168.2.1` | PC03, PC04 |
-| **WAN Link** | `203.0.113.0/30` | — | Serial Link (R1 $\leftrightarrow$ R2) |
-| **SERVER 1** | `10.0.1.0/24` | `10.0.1.1` | Critical Server 1 |
-| **SERVER 2** | `10.0.2.0/24` | `10.0.2.1` | Critical Server 2 |
+| **WAN 1** | `203.0.113.2 255/30` | `203.0.113.1` | ISP-A, WAN1 |
+| **WAN 2** | `198.51.100.2/30` | `198.51.100.1` | ISP-B, WAN2 |
+| **VLAN 10** | `10.10.10.0/24` | `10.10.10.1` | USER LAN |
+| **VLAN 20** | `10.10.20.0/24` | `10.10.20.1` | SERVER LAN |
+| **VLAN 99** | `10.255.0.0/24` | `10.255.0.10` | MGMT LAN |
 
 
 ## FortiGate HA — Concepts
