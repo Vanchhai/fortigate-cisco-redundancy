@@ -52,7 +52,7 @@ Dual FortiGate firewalls in Active-Passive HA, dual Cisco Catalyst core switches
 - IPsec SAs and FortiGuard cache
 - Certificates and local users
 
-## FortiGate CLI — HA Configuration (Apply on BOTH units; sync handles the rest)
+## FortiGate CLI — HA Configuration (Apply on BOTH units, sync handles the rest)
 ### Primary unit (FGT-A)
 ```bash
 # Hostname & HA cluster on FGT-A
@@ -64,7 +64,7 @@ config system ha
     set group-id 10
     set group-name CORE-HA
     set mode a-p
-    set password Fortinet!HA2026
+    set password Fortinet     #HA2026
     set hbdev "ha1" 50 "ha2" 100
     set session-pickup enable
     set session-pickup-connectionless enable
@@ -91,7 +91,7 @@ config system ha
     set group-id 10
     set group-name CORE-HA
     set mode a-p
-    set password Fortinet!HA2026
+    set password Fortinet     #HA2026
     set hbdev "ha1" 50 "ha2" 100
     set session-pickup enable
     set session-pickup-connectionless enable
@@ -254,6 +254,7 @@ end
 ## Cisco IOS XE — StackWise-Virtual & VLANs
 ```bash
 # On Switch-1 (will become Active)
+!
 configure terminal
 stackwise-virtual
  domain 10
@@ -276,10 +277,12 @@ interface TenGigabitEthernet2/0/48
 !
 write memory
 reload          # reboot both members
+!
 ```
 
 ```bash
 # VTP & VLAN database (after stack forms)
+!
 vtp mode transparent
 !
 vlan 10
@@ -293,20 +296,24 @@ vlan 99
 vlan 999
  name NATIVE-UNUSED
 !
-! Spanning tree — core is root
+# Spanning tree — core is root
+!
 spanning-tree mode rapid-pvst
 spanning-tree vlan 1-4094 priority 4096
 spanning-tree extend system-id
 !
-! Mgmt interface (logical)
+# Mgmt interface (logical)
+!
 interface Vlan99
  ip address 10.255.0.10 255.255.255.0
  no shutdown
+ !
  ```
 ## Cisco IOS XE — LACP Uplinks to FortiGate
 ### Multichassis EtherChannel (MEC) across both stack members
 ```bash
 # Port-channel to FortiGate-A (Po10)
+!
 interface Port-channel10
  description >>> FGT-A agg1 <<<
  switchport
@@ -322,10 +329,12 @@ interface TenGigabitEthernet1/0/1
 interface TenGigabitEthernet2/0/1
  description FGT-A port2
  channel-group 10 mode active
+!
 ```
 
 ```bash
 # Port-channel to FortiGate-B (Po20)
+!
 interface Port-channel20
  description >>> FGT-B agg1 <<<
  switchport
@@ -341,6 +350,7 @@ interface TenGigabitEthernet1/0/2
 interface TenGigabitEthernet2/0/2
  description FGT-B port2
  channel-group 20 mode active
+!
 ```
 
 ## Cisco IOS XE — HSRP Gateway Redundancy
@@ -403,17 +413,23 @@ line vty 0 15
 ### FortiGate
 ```bash
 # Cluster health
+!
 get system ha status
 diagnose sys ha status
 diagnose sys ha checksum cluster
+!
  
 # Heartbeat & sync
+!
 diagnose sys ha dump-by group
 diagnose sys session sync
+!
  
 # Interface & LACP
+!
 diagnose netlink aggregate name agg1
 get system interface physical
+!
  
 # SD-WAN & routing
 diagnose sys sdwan health-check
